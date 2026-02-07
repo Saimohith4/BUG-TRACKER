@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bug Tracker Frontend</title>
+</head>
+<body>
+  <h2>Bug Tracker Demo</h2>
+  <button onclick="register()">Register Demo User</button>
+
+  <script>
+    async function register() {
+      const res = await fetch("http://127.0.0.1:8000/users/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email:"demo@mail.com", password:"1234"})
+      });
+      const data = await res.json();
+      alert(JSON.stringify(data));
+    }
+  </script>
+</body>
+</html>

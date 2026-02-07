@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Projects</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #eef2f7;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Projects</h2>
+
+<input id="name" placeholder="Project Name">
+<input id="owner" placeholder="Owner ID">
+<button onclick="createProject()">Create Project</button>
+
+<h3>Project List</h3>
+<div id="projects"></div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+async function createProject() {
+  await fetch(API + "/projects/", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      owner_id: parseInt(document.getElementById("owner").value)
+    })
+  });
+
+  loadProjects();
+}
+
+async function loadProjects() {
+  const res = await fetch(API + "/projects/");
+  const projects = await res.json();
+
+  const container = document.getElementById("projects");
+  container.innerHTML = "";
+
+  projects.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerText = p.name + " (Owner: " + p.owner_id + ")";
+    container.appendChild(div);
+  });
+}
+
+loadProjects();
+</script>
+
+</body>
+</html>

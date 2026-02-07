@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bug Tracker</title>
+
+  <!-- Drag library -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial;
+      background: #eef2f7;
+    }
+
+    header {
+      background: #1f2937;
+      color: white;
+      padding: 15px 25px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .form-box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .board {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .column {
+      flex: 1;
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 15px;
+      min-height: 400px;
+    }
+
+    .column h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .ticket {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      cursor: grab;
+    }
+
+    .ticket small {
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  Bug Tracker Dashboard
+</header>
+
+<div class="container">
+
+  <div class="form-box">
+    <h3>Create Ticket</h3>
+
+    <input id="title" placeholder="Title">
+    <textarea id="desc" placeholder="Description"></textarea>
+
+    <label>Project</label>
+    <select id="project"></select>
+
+    <input id="assignee" placeholder="User ID">
+
+    <button onclick="createTicket()">Create Ticket</button>
+  </div>
+
+  <button onclick="loadTickets()">Refresh Board</button>
+
+  <div class="board">
+    <div class="column">
+      <h3>To Do</h3>
+      <div id="todo"></div>
+    </div>
+
+    <div class="column">
+      <h3>In Progress</h3>
+      <div id="progress"></div>
+    </div>
+
+    <div class="column">
+      <h3>Done</h3>
+      <div id="done"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+async function loadProjects() {
+  const res = await fetch(API + "/projects/");
+  const projects = await res.json();
+
+  const dropdown = document.getElementById("project");
+  dropdown.innerHTML = "";
+
+  projects.forEach(p => {
+    const option = document.createElement("option");
+    option.value = p.id;
+    option.textContent = p.name;
+    dropdown.appendChild(option);
+  });
+}
+
+async function createTicket() {
+  await fetch(API + "/tickets/", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      title: document.getElementById("title").value,
+      description: document.getElementById("desc").value,
+      project_id: parseInt(document.getElementById("project").value),
+      assignee_id: parseInt(document.getElementById("assignee").value)
+    })
+  });
+
+  loadTickets();
+}
+
+async function updateStatus(id, status) {
+  await fetch(API + `/tickets/${id}/status`, {
+    method: "PUT",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({status})
+  });
+}
+
+async function loadTickets() {
+  const res = await fetch(API + "/tickets/");
+  const tickets = await res.json();
+
+  todo.innerHTML = "";
+  progress.innerHTML = "";
+  done.innerHTML = "";
+
+  tickets.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "ticket";
+    div.dataset.id = t.id;
+
+    div.innerHTML = `
+      <b>${t.title}</b><br>
+      <small>${t.description}</small>
+    `;
+
+    if (t.status === "To Do") todo.appendChild(div);
+    else if (t.status === "In Progress") progress.appendChild(div);
+    else done.appendChild(div);
+  });
+}
+
+/* Drag setup */
+function setupDrag(container, status) {
+  new Sortable(container, {
+    group: "tickets",
+    animation: 150,
+    onAdd: async function(evt) {
+      const id = evt.item.dataset.id;
+      await updateStatus(id, status);
+    }
+  });
+}
+
+setupDrag(todo, "To Do");
+setupDrag(progress, "In Progress");
+setupDrag(done, "Done");
+
+loadProjects();
+loadTickets();
+</script>
+
+</body>
+</html>

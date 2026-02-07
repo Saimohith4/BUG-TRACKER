@@ -1,0 +1,120 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4f6fb;
+  color: #222;
+}
+
+/* Header */
+h2 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Buttons */
+button {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+/* Ticket form */
+input, textarea, select {
+  width: 260px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+textarea {
+  height: 60px;
+}
+
+/* Board layout */
+.board {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Columns */
+.column {
+  flex: 1;
+  background: #eef2ff;
+  border-radius: 10px;
+  padding: 15px;
+  min-height: 350px;
+}
+
+.column h3 {
+  text-align: center;
+}
+
+/* Ticket cards */
+.ticket {
+  background: white;
+  color: #111;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: grab;
+  font-size: 14px;
+}
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+}
+
+.login-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.secondary {
+  background: #e5e7eb;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  width: 100%;
+  cursor: pointer;
+}
