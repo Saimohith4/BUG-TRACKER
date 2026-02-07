@@ -50,5 +50,5 @@ This project demonstrates REST API development using FastAPI and a modern fronte
 - JavaScript
 - HTML/CSS
 - SortableJS
-## Project Structure
+
 
